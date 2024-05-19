@@ -14,6 +14,7 @@ var welcomeMessageConfig = config["WelcomeMessage"];
 var elevenLabsApiKeyConfig = config["ElevenLabsApiKey"];
 var elevenLabsVoiceIdConfig = config["VoiceId"];
 var ollamaUrlConfig = config["OllamaUrl"];
+var keepVoiceFilesConfig = config["KeepVoiceFiles"];
 
 if (String.IsNullOrEmpty(modelConfig) ||
     String.IsNullOrEmpty(initialPromptConfig) ||
@@ -32,6 +33,12 @@ var welcomeMessage = Environment.GetEnvironmentVariable(welcomeMessageConfig, En
 var elevenLabsApiKey = Environment.GetEnvironmentVariable(elevenLabsApiKeyConfig, EnvironmentVariableTarget.Machine);
 var elevenLabsVoiceId = Environment.GetEnvironmentVariable(elevenLabsVoiceIdConfig, EnvironmentVariableTarget.Machine);
 var ollamaUrl = Environment.GetEnvironmentVariable(ollamaUrlConfig, EnvironmentVariableTarget.Machine);
+
+var keepVoiceFiles = false;
+if (!String.IsNullOrEmpty(keepVoiceFilesConfig))
+{
+    _ = bool.TryParse(Environment.GetEnvironmentVariable(keepVoiceFilesConfig, EnvironmentVariableTarget.Machine), out keepVoiceFiles);
+}
 
 if (String.IsNullOrEmpty(model) ||
     String.IsNullOrEmpty(initialPrompt) ||
@@ -75,6 +82,11 @@ while (!string.IsNullOrEmpty(line))
         Console.WriteLine();
         var player = new Player();
         player.Play($"{voiceClip.Id}.mp3").Wait();
+
+        if (!keepVoiceFiles)
+        {
+            File.Delete($"{voiceClip.Id}.mp3");
+        }
     }
     else
     {

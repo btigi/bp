@@ -28,13 +28,14 @@ $ dotnet build
 
 ## Usage
 
-bp requires six configuration settings to run, read from environment variables. To accommodate multiple instances of bp running on the same machine the names of the variables are stored in the appsettings.json file, meaning each instance can point to a different set of environment variables. The six settings are:
+bp requires several configuration settings to run, read from environment variables. To accommodate multiple instances of bp running on the same machine the names of the variables are stored in the appsettings.json file, meaning each instance can point to a different set of environment variables. The  settings are:
  - Model - the name of the ollama model to use. The model is not installed by bp and must be pre-configured in ollama.
  - InitialPrompt - the initial prompt send to the model.
  - WelcomeMessage - the text displayed to the user when the application initialization is complete.
  - ElevenLabsApiKey - the API key to use when calling Eleven Labs.
  - VoiceId - the ID of the voice to use when calling Eleven Labs.
- - ollamaUrl - the URL of the ollama instance to call (usually http://localhost:11434)
+ - OllamaUrl - the URL of the ollama instance to call (usually http://localhost:11434)
+ - KeepVoiceFiles - a boolean value (true / false) to indicate if mp3 files downloaded from Eleven Labs should be kept (true) or deleted (false) after they have been played. Defaults to false.
 
  Once configured you can run bp at the command line:
  ```bp```
