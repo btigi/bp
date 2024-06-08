@@ -86,20 +86,28 @@ while (!string.IsNullOrEmpty(line))
 
     var text = completion.Response;
 
-    if (!line.EndsWith('~'))
+    if (!line.EndsWith('~'))    
     {
-        var voice = await api.VoicesEndpoint.GetVoiceAsync(elevenLabsVoiceId);
-        var defaultVoiceSettings = await api.VoicesEndpoint.GetDefaultVoiceSettingsAsync();
-        var voiceClip = await api.TextToSpeechEndpoint.TextToSpeechAsync(text, voice, defaultVoiceSettings);
-        await File.WriteAllBytesAsync($"{voiceFileDirectory}{voiceClip.Id}.mp3", voiceClip.ClipData.ToArray());
-        Console.WriteLine(completion.Response);
-        Console.WriteLine();
-        var player = new Player();
-        player.Play($"{voiceFileDirectory}{voiceClip.Id}.mp3").Wait();
-
-        if (!keepVoiceFiles)
+        try
         {
-            File.Delete($"{voiceFileDirectory}{voiceClip.Id}.mp3");
+            var voice = await api.VoicesEndpoint.GetVoiceAsync(elevenLabsVoiceId);
+            var defaultVoiceSettings = await api.VoicesEndpoint.GetDefaultVoiceSettingsAsync();
+            var voiceClip = await api.TextToSpeechEndpoint.TextToSpeechAsync(text, voice, defaultVoiceSettings);
+            await File.WriteAllBytesAsync($"{voiceFileDirectory}{voiceClip.Id}.mp3", voiceClip.ClipData.ToArray());
+            Console.WriteLine(completion.Response);
+            Console.WriteLine();
+            var player = new Player();
+            player.Play($"{voiceFileDirectory}{voiceClip.Id}.mp3").Wait();
+
+            if (!keepVoiceFiles)
+            {
+                File.Delete($"{voiceFileDirectory}{voiceClip.Id}.mp3");
+            }
+        }
+        catch
+        {
+            Console.WriteLine($"[voiceless] {completion.Response}");
+            Console.WriteLine();
         }
     }
     else
