@@ -1,4 +1,5 @@
-﻿using ElevenLabs;
+﻿using bpe;
+using ElevenLabs;
 using Microsoft.Extensions.Configuration;
 using NetCoreAudio;
 using OllamaSharp;
@@ -16,6 +17,7 @@ var elevenLabsVoiceIdConfig = config["VoiceId"];
 var ollamaUrlConfig = config["OllamaUrl"];
 var keepVoiceFilesConfig = config["KeepVoiceFiles"];
 var voiceFileDirectoryConfig = config["VoiceFileDirectory"];
+var vectorDBConfig = config["VectorDBpath"];
 
 if (String.IsNullOrEmpty(modelConfig) ||
     String.IsNullOrEmpty(initialPromptConfig) ||
@@ -36,6 +38,11 @@ var elevenLabsApiKey = Environment.GetEnvironmentVariable(elevenLabsApiKeyConfig
 var elevenLabsVoiceId = Environment.GetEnvironmentVariable(elevenLabsVoiceIdConfig, EnvironmentVariableTarget.Machine);
 var ollamaUrl = Environment.GetEnvironmentVariable(ollamaUrlConfig, EnvironmentVariableTarget.Machine);
 var voiceFileDirectory = Environment.GetEnvironmentVariable(voiceFileDirectoryConfig, EnvironmentVariableTarget.Machine);
+var vectorDBDirectory = String.Empty;
+if (!String.IsNullOrEmpty(vectorDBConfig))
+{
+    vectorDBDirectory = Environment.GetEnvironmentVariable(vectorDBConfig, EnvironmentVariableTarget.Machine);
+}
 
 var keepVoiceFiles = false;
 if (!String.IsNullOrEmpty(keepVoiceFilesConfig))
@@ -75,18 +82,32 @@ var api = new ElevenLabsClient(elevenLabsApiKey);
 
 var context = await ollama.GetCompletion(initialPrompt, null!);
 
+HyperVectorDB.HyperVectorDB? vectorDB = null;
+if (!String.IsNullOrEmpty(vectorDBDirectory))
+{
+    vectorDB = new HyperVectorDB.HyperVectorDB(new OllamaEmbedder(model, ollamaUrl), vectorDBDirectory, 32);
+    vectorDB.Load();
+}
+
 Console.WriteLine(welcomeMessage);
 Console.Write("> ");
 var line = Console.ReadLine();
 
 while (!string.IsNullOrEmpty(line))
 {
-    var completion = await ollama.GetCompletion(line, context);
+    var promptText = line;
+    if (vectorDB != null)
+    {
+        var rag = vectorDB.QueryCosineSimilarity(line, 1);
+        promptText = $"Using this information \"{String.Join(" ", rag.Documents.Select(s => s.DocumentString))}\" answer this prompt: {line}";
+    }
+
+    var completion = await ollama.GetCompletion(promptText, context);
     context = completion;
 
     var text = completion.Response;
 
-    if (!line.EndsWith('~'))    
+    if (!line.EndsWith('~'))
     {
         try
         {

@@ -6,5 +6,6 @@
   "VoiceId": "bpElevenLabsVoiceId",
   "ollamaUrl": "OllamaUrl",
   "KeepVoiceFiles": "bpKeepVoiceFiles",
-  "VoiceFileDirectory": "bpVoiceFileDirectory"
+  "VoiceFileDirectory": "bpVoiceFileDirectory",
+  "VectorDBpath": "bpVectorDBpath"
 }
