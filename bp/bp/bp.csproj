@@ -10,10 +10,11 @@
   <ItemGroup>
     <PackageReference Include="ElevenLabs-DotNet" Version="2.2.1" />
     <PackageReference Include="HyperVectorDB" Version="1.0.0" />
-    <PackageReference Include="MessagePack" Version="2.5.171" />
+    <PackageReference Include="MessagePack" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="NetCoreAudio" Version="2.0.0" />
     <PackageReference Include="OllamaSharp" Version="2.0.10" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
