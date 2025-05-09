@@ -5,7 +5,7 @@ using NetCoreAudio;
 using OllamaSharp;
 
 var builder = new ConfigurationBuilder()
-                .AddJsonFile($"bp.json", true, true);
+                  .AddJsonFile($"bp.json", true, true);
 
 var config = builder.Build();
 
