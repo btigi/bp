@@ -4,8 +4,14 @@ using Microsoft.Extensions.Configuration;
 using NetCoreAudio;
 using OllamaSharp;
 
+var configFile = "bp.json";
+if (args.Length == 1 && File.Exists(args[0]))
+{
+    configFile = args[0];
+}
+
 var builder = new ConfigurationBuilder()
-                  .AddJsonFile($"bp.json", true, true);
+                  .AddJsonFile(configFile, true, true);
 
 var config = builder.Build();
 
