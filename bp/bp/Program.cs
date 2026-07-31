@@ -1,5 +1,7 @@
 ﻿using bpe;
 using ElevenLabs;
+using ElevenLabs.Models;
+using ElevenLabs.Voices;
 using Microsoft.Extensions.Configuration;
 using NetCoreAudio;
 using OllamaSharp;
@@ -119,7 +121,7 @@ while (!string.IsNullOrEmpty(line))
         {
             var voice = await api.VoicesEndpoint.GetVoiceAsync(elevenLabsVoiceId);
             var defaultVoiceSettings = await api.VoicesEndpoint.GetDefaultVoiceSettingsAsync();
-            var voiceClip = await api.TextToSpeechEndpoint.TextToSpeechAsync(text, voice, defaultVoiceSettings);
+            var voiceClip = await api.TextToSpeechEndpoint.TextToSpeechAsync(text, voice, defaultVoiceSettings, Model.MultiLingualV2);
             await File.WriteAllBytesAsync($"{voiceFileDirectory}{voiceClip.Id}.mp3", voiceClip.ClipData.ToArray());
             Console.WriteLine(completion.Response);
             Console.WriteLine();
